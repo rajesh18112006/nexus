@@ -1,0 +1,7 @@
+{
+  "description": "NEXUS — Inventory Intelligence API",
+  "watch": ["src/**/*.ts"],
+  "ext": "ts",
+  "ignore": ["src/**/*.spec.ts", "src/**/*.test.ts"],
+  "exec": "ts-node -r tsconfig-paths/register src/server.ts"
+}

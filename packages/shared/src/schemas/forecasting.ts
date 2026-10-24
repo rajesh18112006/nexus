@@ -1,0 +1,41 @@
+import { z } from 'zod';
+
+export const RiskSeverityEnum = z.enum(['CRITICAL', 'WARNING', 'LOW', 'HEALTHY']);
+export type RiskSeverity = z.infer<typeof RiskSeverityEnum>;
+
+export const RunwayItemSchema = z.object({
+  productId: z.string(),
+  sku: z.string(),
+  name: z.string(),
+  category: z.string(),
+  currentStock: z.number(),
+  avgDailyDemand: z.number(),
+  daysOfCover: z.number(),
+  stockoutDate: z.string(),
+  replenishmentDate: z.string().nullable(),
+  riskLevel: RiskSeverityEnum,
+  suggestedReorderQty: z.number(),
+  estimatedCost: z.number(),
+  supplierId: z.string().optional(),
+  supplierName: z.string().optional(),
+});
+export type RunwayItem = z.infer<typeof RunwayItemSchema>;
+
+export const RecommendationSchema = z.object({
+  id: z.string(),
+  productId: z.string(),
+  sku: z.string(),
+  productName: z.string(),
+  severity: RiskSeverityEnum,
+  what: z.string(),
+  why: z.string(),
+  evidence: z.string(),
+  impact: z.string(),
+  suggestedQty: z.number(),
+  estimatedCost: z.number(),
+  supplierId: z.string().optional(),
+  supplierName: z.string().optional(),
+  warehouseId: z.string().optional(),
+  warehouseName: z.string().optional(),
+});
+export type Recommendation = z.infer<typeof RecommendationSchema>;

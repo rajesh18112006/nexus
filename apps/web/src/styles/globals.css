@@ -1,0 +1,245 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,600&family=Inter+Tight:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties (Design Tokens) ───────────────────────────────── */
+:root {
+  /* Colors */
+  --accent:         #E05C28;
+  --accent-hover:   #C44E20;
+  --accent-muted:   #F5DDD4;
+
+  --bg:             #F6F4EF;
+  --bg-raised:      #EDEAE3;
+  --bg-overlay:     #E5E1D8;
+
+  --ink:            #141210;
+  --ink-secondary:  #3D3830;
+  --ink-muted:      #5C5750;
+  --ink-faint:      #8C877E;
+
+  --border:         #D8D4CC;
+  --border-strong:  #B8B3AA;
+
+  --critical:       #C0392B;
+  --critical-bg:    #FDF2F0;
+  --warning:        #D4820A;
+  --warning-bg:     #FDF6EC;
+  --healthy:        #2E7D32;
+  --healthy-bg:     #EFF6EF;
+  --info:           #1565C0;
+  --info-bg:        #EEF3FB;
+
+  /* Typography */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-ui:      'Inter Tight', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  /* Spacing */
+  --sidebar-w:    15rem;
+  --sidebar-collapsed: 3.5rem;
+  --header-h:     3.25rem;
+
+  /* Transitions */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Dark Mode ─────────────────────────────────────────────────────────────── */
+.dark {
+  --bg:             #111010;
+  --bg-raised:      #1A1917;
+  --bg-overlay:     #232220;
+
+  --ink:            #F0EDE6;
+  --ink-secondary:  #C8C4BC;
+  --ink-muted:      #8C877E;
+  --ink-faint:      #5C5750;
+
+  --border:         #2E2C28;
+  --border-strong:  #3D3B36;
+
+  --critical-bg:    #2A1210;
+  --warning-bg:     #251A08;
+  --healthy-bg:     #0E1E0F;
+  --info-bg:        #0B1628;
+}
+
+/* ─── Base Styles ───────────────────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--ink-faint); }
+
+  /* Focus rings — WCAG AA */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  /* Numeric / ID text */
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Remove default button styles */
+  button { cursor: pointer; }
+
+  /* Reduce motion */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ─── Component Utilities ───────────────────────────────────────────────────── */
+@layer utilities {
+  .font-display { font-family: var(--font-display); }
+  .font-mono    { font-family: var(--font-mono); }
+
+  /* Hairline borders */
+  .border-hairline { border-width: 1px; border-color: var(--border); }
+
+  /* Status dots */
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Dense table row hover */
+  .table-row-hover:hover { background: var(--bg-raised); }
+
+  /* Number formatting (all data figures) */
+  .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    letter-spacing: -0.01em;
+  }
+
+  /* Truncate with ellipsis */
+  .truncate-1 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Subtle divider */
+  .divider { border-top: 1px solid var(--border); }
+
+  /* Skeleton loader */
+  .skeleton {
+    background: linear-gradient(90deg, var(--bg-raised) 25%, var(--bg-overlay) 50%, var(--bg-raised) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    border-radius: 3px;
+  }
+
+  @keyframes skeleton-shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* Number tick animation */
+  .num-tick { transition: all 0.4s var(--ease-out-expo); }
+
+  /* Accent highlight */
+  .accent-line {
+    border-left: 2px solid var(--accent);
+    padding-left: 0.75rem;
+  }
+}
+
+/* ─── App Shell ─────────────────────────────────────────────────────────────── */
+.shell-sidebar {
+  width: var(--sidebar-w);
+  min-height: 100dvh;
+  background: var(--bg-raised);
+  border-right: 1px solid var(--border);
+  transition: width 0.2s var(--ease-out-expo);
+  flex-shrink: 0;
+}
+
+.shell-sidebar.collapsed {
+  width: var(--sidebar-collapsed);
+}
+
+.shell-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.shell-header {
+  height: var(--header-h);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  padding: 0 1.25rem;
+  gap: 0.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+/* ─── Command Palette ───────────────────────────────────────────────────────── */
+.cmd-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 18, 16, 0.5);
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 8rem;
+}
+
+.cmd-box {
+  width: 100%;
+  max-width: 640px;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.20);
+  overflow: hidden;
+}
+
+/* ─── Runway / Timeline ─────────────────────────────────────────────────────── */
+.runway-bar {
+  height: 20px;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-overlay);
+}
+
+.runway-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.6s var(--ease-out-expo);
+}
+
+.runway-marker {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ink-secondary);
+}
