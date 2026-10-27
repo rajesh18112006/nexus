@@ -21,6 +21,14 @@ const FIVE_ROLES: Role[] = [
   'auditor',
 ];
 
+const DEMO_ACCOUNTS = [
+  { role: 'admin', label: 'Admin', email: 'admin@nexus.demo', icon: '👑' },
+  { role: 'procurement_manager', label: 'Procurement', email: 'procure@nexus.demo', icon: '📦' },
+  { role: 'warehouse_manager', label: 'Warehouse', email: 'warehouse@nexus.demo', icon: '🏭' },
+  { role: 'finance', label: 'Finance', email: 'finance@nexus.demo', icon: '💰' },
+  { role: 'auditor', label: 'Auditor', email: 'auditor@nexus.demo', icon: '📋' },
+];
+
 export function LoginPage() {
   const navigate = useNavigate();
   const setAuth = useAuthStore((s) => s.setAuth);
@@ -28,13 +36,19 @@ export function LoginPage() {
   const [loading, setLoading] = React.useState(false);
   const [googleModalOpen, setGoogleModalOpen] = React.useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginInput>({
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm<LoginInput>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   });
+
+  const fillDemoAccount = (email: string) => {
+    setValue('email', email, { shouldValidate: true });
+    setValue('password', 'Demo@12345', { shouldValidate: true });
+    toast.info('Demo Credentials Loaded', `Selected ${email}. Click Sign In to enter without any verification code.`);
+  };
 
   const onSubmit = async (data: LoginInput) => {
     setLoading(true);
@@ -156,7 +170,7 @@ export function LoginPage() {
             <span className="text-lg font-display font-semibold text-ink">NEXUS</span>
           </div>
 
-          <div className="mb-8">
+          <div className="mb-6">
             <h2 className="font-display text-2xl font-semibold text-ink mb-1">Sign in to your account</h2>
             <p className="text-sm text-ink-muted">
               Don't have an account or need to join a team?{' '}
@@ -164,6 +178,31 @@ export function LoginPage() {
                 Register here
               </Link>
             </p>
+          </div>
+
+          {/* Quick Demo Accounts Selector (1-Click Fill) */}
+          <div className="p-3 rounded-lg border border-border bg-surface-raised space-y-2 mb-5">
+            <div className="flex items-center justify-between text-2xs font-semibold uppercase tracking-wider text-ink-muted">
+              <span className="flex items-center gap-1.5 text-accent">
+                <Zap className="w-3.5 h-3.5" />
+                Quick Demo Accounts (No OTP)
+              </span>
+              <span className="text-3xs text-ink-faint">Password: Demo@12345</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {DEMO_ACCOUNTS.map((demo) => (
+                <button
+                  key={demo.email}
+                  type="button"
+                  onClick={() => fillDemoAccount(demo.email)}
+                  className="px-2 py-1 rounded text-2xs font-medium border border-border bg-surface hover:bg-accent/10 hover:border-accent/30 hover:text-accent transition-colors flex items-center gap-1 cursor-pointer"
+                  title={`Click to fill ${demo.email}`}
+                >
+                  <span>{demo.icon}</span>
+                  <span>{demo.label}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Continue with Google */}

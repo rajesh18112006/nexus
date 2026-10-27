@@ -328,14 +328,17 @@ export const AuthService = {
       throw new AppError(401, 'Invalid email or password.', 'INVALID_CREDENTIALS');
     }
 
-    // Require verified email for non-admin accounts (admin accounts do not require verification code)
-    if (user.role === 'admin') {
-      if (user.isEmailVerified === false) {
+    // Demo accounts and admin accounts never require email verification codes
+    const isDemoAccount = user.email.endsWith('.demo') || user.email.includes('nexus.demo');
+
+    if (user.role === 'admin' || isDemoAccount) {
+      if (user.isEmailVerified !== true) {
         user.isEmailVerified = true;
+        user.approvalStatus = 'APPROVED';
         await user.save();
       }
     } else if (user.isEmailVerified === false) {
-      // Auto-trigger fresh code if expired
+      // Auto-trigger fresh code if expired for real newly registered non-admin users
       const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
       await User.findByIdAndUpdate(user._id, {
         emailVerificationCode: verificationCode,
