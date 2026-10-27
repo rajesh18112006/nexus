@@ -7,10 +7,13 @@ import { env } from '../config/env';
 
 import { GoogleAuthService } from '../services/googleAuth.service';
 
+const isProduction = env.NODE_ENV === 'production';
+const isCrossSite = isProduction && Boolean(env.CLIENT_URL && !env.CLIENT_URL.includes('localhost'));
+
 const REFRESH_COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: env.NODE_ENV === 'production',
-  sameSite: 'strict' as const,
+  secure: isProduction,
+  sameSite: (isCrossSite ? 'none' : 'lax') as 'none' | 'lax',
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7d in ms
   path: '/api/v1/auth',
 };

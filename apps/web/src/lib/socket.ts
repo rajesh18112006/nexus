@@ -10,7 +10,8 @@ export function connectSocket(): Socket {
 
   if (socket?.connected) return socket;
 
-  socket = io('/', {
+  const socketUrl = import.meta.env.VITE_API_URL || '/';
+  socket = io(socketUrl, {
     auth: { token },
     transports: ['websocket'],
     reconnectionAttempts: 5,

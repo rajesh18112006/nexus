@@ -1,3 +1,5 @@
+import path from 'path';
+import fs from 'fs';
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -91,7 +93,24 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api/v1', apiRoutes);
 
-// ─── 404 Handler ─────────────────────────────────────────────────────────────
+// ─── Static Frontend Serving (in Production or when Web build exists) ───────
+const webDistCandidates = [
+  path.resolve(process.cwd(), 'apps/web/dist'),
+  path.resolve(__dirname, '../../web/dist'),
+  path.resolve(__dirname, '../../../apps/web/dist'),
+];
+const webDist = webDistCandidates.find((dir) => fs.existsSync(dir));
+
+if (webDist) {
+  logger.info({ webDist }, 'Serving frontend static assets from web/dist');
+  app.use(express.static(webDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(webDist, 'index.html'));
+  });
+}
+
+// ─── 404 Handler for API ──────────────────────────────────────────────────────
 app.use((_req, res) => {
   res.status(404).json({
     success: false,
